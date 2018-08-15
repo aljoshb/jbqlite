@@ -1,3 +1,6 @@
+#ifndef INPUT_HEADER_FILE
+#define INPUT_HEADER_FILE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,3 +16,5 @@ typedef struct InputBuffer_t {
 /* Function to allocations */
 InputBuffer* new_input_buffer();
 void read_input(InputBuffer* input_buffer);
+
+#endif
