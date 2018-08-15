@@ -7,15 +7,7 @@
 #include "../include/input.h"
 #include "../include/statements.h"
 #include "../include/interface.h"
-
-MetaCommandResult do_meta_command(InputBuffer* input_buffer) {
-    if (strcmp(input_buffer->buffer, ".exit")==0) {
-        exit(EXIT_SUCCESS);
-    }
-    else {
-        return META_COMMAND_UNRECOGNIZED_COMMAND;
-    }
-}
+#include "../include/commands.h"
 
 /* Entry point of the program */
 int main(int argc, char const *argv[]) {
@@ -38,7 +30,7 @@ int main(int argc, char const *argv[]) {
         /* 
          * Check if the command was a meta-command (command beginning 
          * with '.' i.e. a non sql statement like .exit) 
-         * */
+         */
         if (input_buffer->buffer[0] == '.') {
             switch ( do_meta_command(input_buffer) ) {
                 case (META_COMMAND_SUCCESS):
@@ -58,7 +50,7 @@ int main(int argc, char const *argv[]) {
                 printf("Unrecognized keyword at start of '%s'.\n", input_buffer->buffer);
                 continue;
         }
-        
+
         /* Execute the SQL statement */
         execute_statement(&statement);
         printf("Executed.\n");

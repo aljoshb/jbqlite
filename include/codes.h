@@ -6,7 +6,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-/* Non-SQL commands results */
+/* Non-SQL (meta-commands) commands results code */
 enum MetaCommandResult_t {
     META_COMMAND_SUCCESS,
     META_COMMAND_UNRECOGNIZED_COMMAND

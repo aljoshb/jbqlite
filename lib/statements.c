@@ -7,6 +7,7 @@
 #include "../include/statements.h"
 #include "../include/input.h"
 
+/* Prepare the statement by getting it's type,... */
 PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement) {
     if (strncmp(input_buffer->buffer, "insert", 6) == 0) {
         statement->type = STATEMENT_INSERT;
@@ -19,6 +20,7 @@ PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement)
     return PREPARE_UNRECOGNIZED_STATEMENT;
 }
 
+/* Virtual Machine (it executes the statements) */
 void execute_statement(Statement* statement) {
     switch (statement->type) {
         case (STATEMENT_INSERT):
