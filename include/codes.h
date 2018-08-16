@@ -16,8 +16,15 @@ typedef enum MetaCommandResult_t MetaCommandResult;
 /* SQL commands results code */
 enum PrepareResult_t {
     PREPARE_SUCCESS,
+    PREPARE_SYNTAX_ERROR,
     PREPARE_UNRECOGNIZED_STATEMENT
 };
 typedef enum PrepareResult_t PrepareResult;
+
+enum ExecuteResult_t {
+    EXECUTE_SUCCESS,
+    EXECUTE_TABLE_FULL
+};
+typedef enum ExecuteResult_t ExecuteResult;
 
 #endif

@@ -8,6 +8,7 @@
 #include "../include/statements.h"
 #include "../include/interface.h"
 #include "../include/commands.h"
+#include "../include/table.h"
 
 /* Entry point of the program */
 int main(int argc, char const *argv[]) {
@@ -17,6 +18,9 @@ int main(int argc, char const *argv[]) {
 
     /* A buffer to hold the command line inputs */
     InputBuffer* input_buffer = new_input_buffer();
+
+    /* Initialize a table */
+    Table* table = new_table();
 
     /* REPL loop */
     while(1) {
@@ -46,14 +50,24 @@ int main(int argc, char const *argv[]) {
         switch(prepare_statement(input_buffer, &statement)) {
             case (PREPARE_SUCCESS):
                 break;
+            case (PREPARE_SYNTAX_ERROR):
+                printf("Syntax error. Could not parse statment.\n");
+                continue;
             case (PREPARE_UNRECOGNIZED_STATEMENT):
                 printf("Unrecognized keyword at start of '%s'.\n", input_buffer->buffer);
                 continue;
         }
 
         /* Execute the SQL statement */
-        execute_statement(&statement);
-        printf("Executed.\n");
+        switch(execute_statement(&statement, table)) {
+            case (EXECUTE_SUCCESS):
+                printf("Executed.\n");
+                break;
+            case (EXECUTE_TABLE_FULL):
+                printf("Error: Table full.\n");
+                break;
+        }
+    
     }
 
     return 0;
