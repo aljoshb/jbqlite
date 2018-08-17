@@ -16,6 +16,8 @@ typedef enum MetaCommandResult_t MetaCommandResult;
 /* SQL commands results code */
 enum PrepareResult_t {
     PREPARE_SUCCESS,
+    PREPARE_NEGATIVE_ID,
+    PREPARE_STRING_TOO_LONG,
     PREPARE_SYNTAX_ERROR,
     PREPARE_UNRECOGNIZED_STATEMENT
 };

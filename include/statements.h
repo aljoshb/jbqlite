@@ -24,6 +24,7 @@ typedef struct Statement_t Statement;
 
 /* Function Declarations */
 PrepareResult prepare_statement(InputBuffer* input_buffer, Statement* statement);
+PrepareResult prepare_insert(InputBuffer* input_buffer, Statement* statement);
 ExecuteResult execute_statement(Statement* statement, Table* table);
 ExecuteResult execute_insert(Statement* statement, Table* table);
 ExecuteResult execute_select(Statement* statement, Table* table);
