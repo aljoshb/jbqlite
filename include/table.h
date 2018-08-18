@@ -42,13 +42,23 @@ struct Table_t {
 };
 typedef struct Table_t Table;
 
+/* Cursor will be used to move around a table */
+struct Cursor_t {
+    Table* table;
+    uint32_t row_num;
+    bool end_of_table; // One position past the last element in the table
+};
+typedef struct Cursor_t Cursor;
 
 /* Function Declarations */
 Table* db_open(const char* filename);
 void db_close(Table* table);
 void serialize_row(Row* source, void* destination);
 void deserialize_row(void* source, Row* destination);
-void* row_slot(Table* table, uint32_t row_num);
+void* cursor_value(Cursor* cursor);
 void print_row(Row* row);
+Cursor* table_start(Table* table);
+Cursor* table_end(Table* table);
+void cursor_advance(Cursor* cursor);
 
 #endif
