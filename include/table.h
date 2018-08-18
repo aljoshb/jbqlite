@@ -29,14 +29,23 @@ struct Row_t {
 };
 typedef struct Row_t Row;
 
-struct Table_t {
+struct Pager_t {
+    int file_descriptor;
+    uint32_t file_length;
     void* pages[TABLE_MAX_PAGES];
+};
+typedef struct Pager_t Pager;
+
+struct Table_t {
+    Pager* pager;
     uint32_t num_rows;
 };
 typedef struct Table_t Table;
 
+
 /* Function Declarations */
-Table* new_table();
+Table* db_open(const char* filename);
+void db_close(Table* table);
 void serialize_row(Row* source, void* destination);
 void deserialize_row(void* source, Row* destination);
 void* row_slot(Table* table, uint32_t row_num);

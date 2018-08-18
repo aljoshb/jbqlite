@@ -9,6 +9,6 @@
 #include "./codes.h"
 #include "./input.h"
 
-MetaCommandResult do_meta_command(InputBuffer* input_buffer);
+MetaCommandResult do_meta_command(InputBuffer* input_buffer, Table* table);
 
 #endif

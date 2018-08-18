@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 #include "../include/codes.h"
 #include "../include/input.h"
@@ -9,14 +11,72 @@
 #include "../include/interface.h"
 #include "../include/commands.h"
 #include "../include/table.h"
+#include "../include/pager.h"
 
-/* Initialize the table */
-Table* new_table() {
+/**
+ * Open a connection to the database
+ * i.e. open the database file, initialize
+ * a pager data structure and initialize a 
+ * table data structure.
+ */
+Table* db_open(const char* filename) {
+    
+    Pager* pager = pager_open(filename);
+    uint32_t num_rows = pager->file_length/ROW_SIZE;
+
     Table* table = malloc(sizeof(Table));
-    table->num_rows = 0;
+    table->pager = pager;
+    table->num_rows = num_rows;
 
     return table;
 }
+
+/**
+ * db_close is called when a user wants to exit
+ * the database and it flushes the page cache to disk,
+ * closes the database file and frees the memory for the
+ * Pager and Table structures. 
+ */
+void db_close(Table* table) {
+
+    Pager* pager = table->pager;
+    uint32_t num_full_pages = table->num_rows / ROWS_PER_PAGE;
+
+    for (uint32_t i = 0; i < num_full_pages; i++) {
+        if (pager->pages[i] == NULL) {
+            continue;
+        }
+        printf("about to enter pager_flush\n");
+        pager_flush(pager, i, PAGE_SIZE);
+        free(pager->pages[i]);
+        pager->pages[i] = NULL;
+    }
+
+    uint32_t num_additional_rows = table->num_rows % ROWS_PER_PAGE;
+    if (num_additional_rows > 0) {
+        uint32_t page_num = num_full_pages;
+        if (pager->pages[page_num] != NULL) {
+            pager_flush(pager, page_num, num_additional_rows * ROW_SIZE);
+            free(pager->pages[page_num]);
+            pager->pages[page_num] = NULL;
+        }
+    }
+
+    int result = close(pager->file_descriptor);
+    if (result == -1) {
+        printf("Error closing database file.\n");
+        exit(EXIT_FAILURE);
+    }
+    for (uint32_t i = 0; i < TABLE_MAX_PAGES; i++) {
+        void* page = pager->pages[i];
+        if (page) {
+            free(page);
+            pager->pages[i] = NULL;
+        }
+    }
+    free(pager);
+}
+
 
 /* Serialize a row database understandable form */
 void serialize_row(Row* source, void* destination) {
@@ -35,13 +95,7 @@ void deserialize_row(void* source, Row* destination) {
 /* Determine where to read/write in memory for a particular row */
 void* row_slot(Table* table, uint32_t row_num) {
     uint32_t page_num = row_num / ROWS_PER_PAGE;
-    void* page = table->pages[page_num];
-
-    if (!page) {
-        /* Only allocate memory when we try to access a page */
-        page = table->pages[page_num] = malloc(PAGE_SIZE);
-    }
-
+    void* page = get_page(table->pager, page_num);
     uint32_t row_offset = row_num % ROWS_PER_PAGE;
     uint32_t byte_offset = row_offset * ROW_SIZE;
     

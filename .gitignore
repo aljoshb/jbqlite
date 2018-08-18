@@ -1,5 +1,7 @@
 .project
 .vscode
 *.o
+*.jbqlite
+*.db
 jbqlite
 tempCodeRunnerFile

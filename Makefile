@@ -5,8 +5,8 @@ default: jbqlite
 
 # To create the executable file jbqlite, object files:
 # main.o, input.o and welcome.o are needed.
-jbqlite: main.o input.o interface.o statements.o commands.o table.o
-	$(CC) $(CFLAGS) -o jbqlite main.o input.o interface.o statements.o commands.o table.o
+jbqlite: main.o input.o interface.o statements.o commands.o table.o pager.o
+	$(CC) $(CFLAGS) -o jbqlite main.o input.o interface.o statements.o commands.o table.o pager.o
 
 # To create the object file main.o, source file:
 # src/main.c is needed
@@ -35,6 +35,9 @@ commands.o: lib/commands.c
 
 table.o: lib/table.c
 	$(CC) $(CFLAGS) -c lib/table.c
+
+pager.o: lib/pager.c
+	$(CC) $(CFLAGS) -c lib/pager.c
 
 clean:
 	$(RM) jbqlite *.o *~

@@ -9,18 +9,25 @@
 #include "../include/interface.h"
 #include "../include/commands.h"
 #include "../include/table.h"
+#include "../include/pager.h"
 
 /* Entry point of the program */
 int main(int argc, char const *argv[]) {
+    /* Get the database filename */
+    if (argc < 2) {
+        printf("Must supply a database filename.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    /* Open the database */
+    const char* filename = argv[1];
+    Table* table = db_open(filename);
 
     /* Welcome message */
     welcome_message();
 
     /* A buffer to hold the command line inputs */
     InputBuffer* input_buffer = new_input_buffer();
-
-    /* Initialize a table */
-    Table* table = new_table();
 
     /* REPL loop */
     while(1) {
@@ -36,7 +43,7 @@ int main(int argc, char const *argv[]) {
          * with '.' i.e. a non sql statement like .exit) 
          */
         if (input_buffer->buffer[0] == '.') {
-            switch ( do_meta_command(input_buffer) ) {
+            switch ( do_meta_command(input_buffer, table) ) {
                 case (META_COMMAND_SUCCESS):
                     continue;
                 case (META_COMMAND_UNRECOGNIZED_COMMAND):
