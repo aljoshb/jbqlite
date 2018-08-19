@@ -72,7 +72,7 @@ enum NodeType_t {
     NODE_INTERNAL,
     NODE_LEAF
 };
-typedef enum NodeType_t Node_Type;
+typedef enum NodeType_t NodeType;
 
 /* Function Declarations */
 Table* db_open(const char* filename);
@@ -82,7 +82,10 @@ void deserialize_row(void* source, Row* destination);
 void* cursor_value(Cursor* cursor);
 void print_row(Row* row);
 Cursor* table_start(Table* table);
-Cursor* table_end(Table* table);
+Cursor* leaf_node_find(Table* table, uint32_t page_num, uint32_t key);
+Cursor* table_find(Table* table, uint32_t key);
+NodeType get_node_type(void* node);
+void set_node_type(void* node, NodeType type);
 uint32_t* leaf_node_num_cells(void* node);
 void* leaf_node_cell(void* node, uint32_t cell_num);
 uint32_t* leaf_node_key(void* node, uint32_t cell_num);

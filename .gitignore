@@ -3,5 +3,6 @@
 *.o
 *.jbqlite
 *.db
+mydb
 jbqlite
 tempCodeRunnerFile
