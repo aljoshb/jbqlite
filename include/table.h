@@ -93,6 +93,7 @@ void* cursor_value(Cursor* cursor);
 void print_row(Row* row);
 bool is_node_root(void* node);
 void set_node_root(void* node, bool is_root);
+Cursor* internal_node_find(Table* table, uint32_t page_num, uint32_t key);
 uint32_t* internal_node_num_keys(void* node);
 uint32_t* internal_node_right_child(void* node);
 uint32_t* internal_node_cell(void* node, uint32_t cell_num);
