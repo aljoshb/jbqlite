@@ -48,6 +48,7 @@
 #define INTERNAL_NODE_KEY_SIZE              sizeof(uint32_t)
 #define INTERNAL_NODE_CHILD_SIZE            sizeof(uint32_t)
 #define INTERNAL_NODE_CELL_SIZE             (INTERNAL_NODE_CHILD_SIZE + INTERNAL_NODE_KEY_SIZE)
+#define INTERNAL_NODE_MAX_CELLS              3
 
 struct Row_t {
     uint32_t id;
@@ -95,7 +96,8 @@ void* cursor_value(Cursor* cursor);
 void print_row(Row* row);
 bool is_node_root(void* node);
 void set_node_root(void* node, bool is_root);
-Cursor* internal_node_find(Table* table, uint32_t page_num, uint32_t key);
+uint32_t internal_node_find_child(void* node, uint32_t key);
+uint32_t* node_parent(void* node);
 uint32_t* leaf_node_next_leaf(void* node);
 uint32_t* internal_node_num_keys(void* node);
 uint32_t* internal_node_right_child(void* node);
@@ -104,6 +106,8 @@ uint32_t* internal_node_child(void* node, uint32_t child_num);
 uint32_t* internal_node_key(void* node, uint32_t key_num);
 uint32_t get_unused_page_num(Pager* pager);
 uint32_t get_node_max_key(void* node);
+void update_internal_node_key(void* node, uint32_t old_key, uint32_t new_key);
+void internal_node_insert(Table* table, uint32_t parent_page_num, uint32_t child_page_num);
 void leaf_node_split_and_insert(Cursor* cursor, uint32_t key, Row* value);
 void create_new_root(Table* table, uint32_t right_child_page_num);
 Cursor* table_start(Table* table);
