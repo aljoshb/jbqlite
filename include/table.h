@@ -28,7 +28,9 @@
 #define COMMON_NODE_HEADER_SIZE       (NODE_TYPE_SIZE+IS_ROOT_SIZE+PARENT_POINTER_SIZE)
 #define LEAF_NODE_NUM_CELLS_SIZE      sizeof(uint32_t)
 #define LEAF_NODE_NUM_CELLS_OFFSET    COMMON_NODE_HEADER_SIZE
-#define LEAF_NODE_HEADER_SIZE         (COMMON_NODE_HEADER_SIZE+LEAF_NODE_NUM_CELLS_SIZE)
+#define LEAF_NODE_NEXT_LEAF_SIZE      sizeof(uint32_t)
+#define LEAF_NODE_NEXT_LEAF_OFFSET    (LEAF_NODE_NUM_CELLS_OFFSET + LEAF_NODE_NUM_CELLS_SIZE)
+#define LEAF_NODE_HEADER_SIZE         (COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE + LEAF_NODE_NEXT_LEAF_SIZE)
 #define LEAF_NODE_KEY_SIZE            sizeof(uint32_t)
 #define LEAF_NODE_KEY_OFFSET          0
 #define LEAF_NODE_VALUE_SIZE          ROW_SIZE
@@ -94,6 +96,7 @@ void print_row(Row* row);
 bool is_node_root(void* node);
 void set_node_root(void* node, bool is_root);
 Cursor* internal_node_find(Table* table, uint32_t page_num, uint32_t key);
+uint32_t* leaf_node_next_leaf(void* node);
 uint32_t* internal_node_num_keys(void* node);
 uint32_t* internal_node_right_child(void* node);
 uint32_t* internal_node_cell(void* node, uint32_t cell_num);
